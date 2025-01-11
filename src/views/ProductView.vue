@@ -2,35 +2,22 @@
 import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { onMounted, ref } from 'vue'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from '@/components/ui/dialog'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
+import { toast } from '@/components/ui/toast'
 import { Input } from '@/components/ui/input'
 import { toTypedSchema } from '@vee-validate/zod'
 import { h } from 'vue'
 import * as z from 'zod'
 
 const formSchema = toTypedSchema(z.object({
-  username: z.string().min(2).max(50),
+  productName: z.string().min(2).max(20),
+  // price: z.number(),
+  quantity: z.number(),
 }))
 
 function onSubmit(values) {
+  console.log("hello")
   toast({
     title: 'You submitted the following values:',
     description: h('pre',
@@ -66,56 +53,70 @@ onMounted(async () => {
 <template>
   <div class="container">
     <main class="w-full px-10">
-      <Form v-slot="{ handleSubmit }" as="" keep-values :validation-schema="formSchema">
-        <Dialog>
-          <DialogTrigger as-child>
-            <Button variant="outline">
-              Edit Profile
-            </Button>
-          </DialogTrigger>
-          <DialogContent class="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-
-            <form id="dialogForm" @submit="handleSubmit($event, onSubmit)">
-              <FormField v-slot="{ componentField }" name="username">
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="shadcn" v-bind="componentField" />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </form>
-
-            <DialogFooter>
-              <Button type="submit" form="dialogForm">
-                Save changes
+        <Form v-slot="{ handleSubmit }" as="" keep-values :validation-schema="formSchema">
+          <Dialog>
+            <DialogTrigger as-child>
+              <Button class="bg-blue-500 hover:bg-blue-600 mt-5">
+                Add New Product
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </Form>
-      <Table class="mt-5">
+            </DialogTrigger>
+            <DialogContent class="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle class="text-blue-500">New Product</DialogTitle>
+                <DialogDescription>
+                  Add a new product here. Click save when you're done.
+                </DialogDescription>
+              </DialogHeader>
 
-        <TableCaption>A list of your recent invoices.</TableCaption>
+              <form id="dialogForm" @submit="handleSubmit($event, onSubmit)">
+                <FormField v-slot="{ componentField }" name="productName">
+                  <FormItem>
+                    <FormLabel>ProductName</FormLabel>
+                    <FormControl>
+                      <Input type="text" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+                <FormField v-slot="{ componentField }" name="price">
+                  <FormItem class="mt-2">
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input type="text" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+                <FormField v-slot="{ componentField }" name="stock">
+                  <FormItem class="mt-2">
+                    <FormLabel>Stock</FormLabel>
+                    <FormControl>
+                      <Input type="text" v-bind="componentField" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </form>
+
+              <DialogFooter>
+                <Button type="submit" form="dialogForm" class="bg-green-500 hover:bg-green-600">
+                  Save Product
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </Form>
+      <Table class="mt-5">
+        <TableCaption>A list of your products.</TableCaption>
         <TableHeader>
-          <TableRow class="bg-green-200 text-lg">
-            <TableHead class="w-[100px] font-bold">No.</TableHead>
-            <TableHead class="font-bold">Code</TableHead>
-            <TableHead class="font-bold">Name</TableHead>
-            <TableHead class="font-bold">Stock</TableHead>
-            <TableHead class="font-bold">Price</TableHead>
-            <TableHead class="font-bold">ProfitPerItem</TableHead>
-            <TableHead class="font-bold">Action</TableHead>
+          <TableRow class="bg-green-300 hover:bg-green-400 text-lg">
+            <TableHead class="w-[100px] font-bold text-gray-600">No.</TableHead>
+            <TableHead class="font-bold text-gray-600">Code</TableHead>
+            <TableHead class="font-bold text-gray-600">Name</TableHead>
+            <TableHead class="font-bold text-gray-600">Stock</TableHead>
+            <TableHead class="font-bold text-gray-600">Price</TableHead>
+            <TableHead class="font-bold text-gray-600">ProfitPerItem</TableHead>
+            <TableHead class="font-bold text-gray-600">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
