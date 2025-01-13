@@ -1,113 +1,134 @@
 <script setup>
 import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from '@/components/ui/dialog'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
-import { toast } from '@/components/ui/toast'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+
 import { Input } from '@/components/ui/input'
 import { toTypedSchema } from '@vee-validate/zod'
 import { h } from 'vue'
 import * as z from 'zod'
+import { useToast } from '@/components/ui/toast/use-toast'
+
+const { toast } = useToast()
 
 const formSchema = toTypedSchema(z.object({
-  productName: z.string().min(2).max(20),
-  // price: z.number(),
-  quantity: z.number(),
+  name: z.string().min(2).max(50),
+  price: z.number().min(1),
+  stock: z.number().min(1),
 }))
 
 function onSubmit(values) {
-  console.log("hello")
-  toast({
-    title: 'You submitted the following values:',
-    description: h('pre',
-      { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' },
-      h('code',
-        { class: 'text-white' },
-        JSON.stringify(values, null, 2))),
-  })
+  var response = fetch('https://localhost:7190/api/Product/Create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(values)
+  });
+  response.then(res => {
+    if (res.ok) {
+      toast({
+        title: 'Success',
+        description: 'Product created successfully',
+      })
+  }
+    }
+  );
 }
 
-const products = ref([]);
 const page = ref(1);
-const pageSize = ref(20);
-const isLoading = ref(true);
+const pageSize = ref(10);
+
+const state = reactive({
+  products: [],
+  isLoading: true,
+  error: null,
+})
 onMounted(async () => {
   try {
     const response = await fetch(`https://localhost:7190/api/Product/GetByConditionWithPaginationByDesc?page=${page.value}&pageSize=${pageSize.value}`)
-    const data = await response.json()
-    products.value = data.data;
+    const data = await response.json();
+    state.products = data.data;
   } catch (error) {
-    console.log(error);
+    state.error = error
   } finally {
-
+    state.isLoading = false;
   }
 })
-
-// defineProps({
-//     products: Array
-// })
-
 </script>
 
 <template>
   <div class="container">
     <main class="w-full px-10">
-        <Form v-slot="{ handleSubmit }" as="" keep-values :validation-schema="formSchema">
-          <Dialog>
-            <DialogTrigger as-child>
-              <Button class="bg-blue-500 hover:bg-blue-600 mt-5">
-                Add New Product
+      <Form v-slot="{ handleSubmit }" :validation-schema="formSchema">
+        <Dialog>
+          <DialogTrigger as-child>
+            <Button class="bg-blue-500 hover:bg-blue-600 mt-5">
+              Add New Product
+            </Button>
+          </DialogTrigger>
+          <DialogContent class="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle class="text-blue-500">Enter New Product Info</DialogTitle>
+            </DialogHeader>
+
+            <form id="dialogForm" @submit.prevent="handleSubmit(onSubmit)">
+              <FormField v-slot="{ componentField }" name="name">
+                <FormItem>
+                  <FormLabel>Product Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+              <FormField v-slot="{ componentField }" name="price">
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input type="number" v-bind="componentField" min="0" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+              <FormField v-slot="{ componentField }" name="stock">
+                <FormItem>
+                  <FormLabel>Stock</FormLabel>
+                  <FormControl>
+                    <Input type="number" v-bind="componentField" min="0" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </form>
+
+            <DialogFooter>
+              <Button type="submit" form="dialogForm" class="bg-green-500 hover:bg-green-600">
+                Save Product
               </Button>
-            </DialogTrigger>
-            <DialogContent class="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle class="text-blue-500">New Product</DialogTitle>
-                <DialogDescription>
-                  Add a new product here. Click save when you're done.
-                </DialogDescription>
-              </DialogHeader>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Form>
 
-              <form id="dialogForm" @submit="handleSubmit($event, onSubmit)">
-                <FormField v-slot="{ componentField }" name="productName">
-                  <FormItem>
-                    <FormLabel>ProductName</FormLabel>
-                    <FormControl>
-                      <Input type="text" v-bind="componentField" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
-                <FormField v-slot="{ componentField }" name="price">
-                  <FormItem class="mt-2">
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input type="text" v-bind="componentField" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
-                <FormField v-slot="{ componentField }" name="stock">
-                  <FormItem class="mt-2">
-                    <FormLabel>Stock</FormLabel>
-                    <FormControl>
-                      <Input type="text" v-bind="componentField" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
-              </form>
-
-              <DialogFooter>
-                <Button type="submit" form="dialogForm" class="bg-green-500 hover:bg-green-600">
-                  Save Product
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </Form>
       <Table class="mt-5">
-        <TableCaption>A list of your products.</TableCaption>
         <TableHeader>
           <TableRow class="bg-green-300 hover:bg-green-400 text-lg">
             <TableHead class="w-[100px] font-bold text-gray-600">No.</TableHead>
@@ -120,7 +141,7 @@ onMounted(async () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="(product, index) in products" :key="product">
+          <TableRow v-for="(product, index) in state.products" :key="product">
             <TableCell>{{ index + 1 }}</TableCell>
             <TableCell>{{ product.productCode }}</TableCell>
             <TableCell>{{ product.name }}</TableCell>
@@ -134,6 +155,12 @@ onMounted(async () => {
           </TableRow>
         </TableBody>
       </Table>
+      <div v-if="state.isLoading" class="text-center mt-5">
+        <PulseLoader class="text-gray-500" />
+      </div>
+      <div v-if="state.error" class="text-red-500 text-center mt-5">
+        <p>{{ state.error }}</p>
+      </div>
     </main>
   </div>
 </template>
