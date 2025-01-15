@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import autoprefixer from 'autoprefixer'
 import tailwind from 'tailwindcss'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'url'
 
@@ -11,7 +12,9 @@ export default defineConfig({
       plugins: [tailwind(), autoprefixer()],
     }
   },
-  plugins: [vue()],
+  plugins: [vue(),
+    vueDevTools()
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

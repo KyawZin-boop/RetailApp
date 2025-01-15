@@ -5,7 +5,6 @@ export type ProductType = {
     stock: number,
     price: number,
     profitPerItem: number,
-    activeFlag: boolean,
 }
 
 export type ProductInputType = {
@@ -14,4 +13,18 @@ export type ProductInputType = {
     stock: number,
     price: number,
     profitPerItem: number,
+}
+
+export type CartType = {
+    id: string,
+    productCode: string,
+    name: string,
+    quantity: number,
+    price: number
+}
+
+export type CartInputType = {
+    productCode: string,
+    productName: string,
+    quantity: number,
 }
