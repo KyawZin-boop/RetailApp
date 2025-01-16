@@ -34,9 +34,9 @@ const openEditDialog = (product) => {
 }
 
 const closeDialog = () => {
-    isOpen.value = false;
-    isEdit.value = false;
-    updateProduct.value = null;
+  isOpen.value = false;
+  isEdit.value = false;
+  updateProduct.value = null;
 }
 
 </script>
@@ -47,28 +47,30 @@ const closeDialog = () => {
       <Button class="bg-blue-500 hover:bg-blue-600 mt-5" @click="openAddProductDialog">Add Product</Button>
       <Table class="mt-5">
         <TableHeader>
-          <TableRow class="bg-green-300 hover:bg-green-400 text-lg">
-            <TableHead class="w-[100px] font-bold text-gray-600">No.</TableHead>
-            <TableHead class="font-bold text-gray-600">Code</TableHead>
-            <TableHead class="font-bold text-gray-600">Name</TableHead>
-            <TableHead class="font-bold text-gray-600">Stock</TableHead>
-            <TableHead class="font-bold text-gray-600">Price</TableHead>
-            <TableHead class="font-bold text-gray-600">ProfitPerItem</TableHead>
-            <TableHead class="font-bold text-gray-600">Action</TableHead>
+          <TableRow class="bg-green-400 hover:bg-green-500 text-lg">
+            <TableHead class="w-[100px] font-bold text-gray-600 text-center">No.</TableHead>
+            <TableHead class="font-bold text-gray-600 text-center">Code</TableHead>
+            <TableHead class="font-bold text-gray-600 text-center">Name</TableHead>
+            <TableHead class="font-bold text-gray-600 text-center">Stock</TableHead>
+            <TableHead class="font-bold text-gray-600 text-center">Price</TableHead>
+            <TableHead class="font-bold text-gray-600 text-center">ProfitPerItem</TableHead>
+            <TableHead class="font-bold text-gray-600 text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow v-for="(product, index) in data" :key="index + 1">
-            <TableCell>{{ index + 1 }}</TableCell>
-            <TableCell>{{ product.productCode }}</TableCell>
-            <TableCell>{{ product.name }}</TableCell>
-            <TableCell>{{ product.stock }}</TableCell>
-            <TableCell>$ {{ product.price }}</TableCell>
-            <TableCell>$ {{ product.profitPerItem }}</TableCell>
-            <TableCell class="flex gap-2 text-white ">
-              <button class="bg-blue-500 rounded-md p-2 px-4" @click="cartStore.addToCart(product)">Add to Cart</button>
-              <button class="bg-green-400 rounded-md p-2 px-4" @click="openEditDialog(product)">Edit</button>
-              <button class="bg-red-500 rounded-md p-2 px-4">Delete</button>
+            <TableCell class="text-center">{{ index + 1 }}</TableCell>
+            <TableCell class="text-center">{{ product.productCode }}</TableCell>
+            <TableCell class="text-center">{{ product.name }}</TableCell>
+            <TableCell class="text-center">{{ product.stock }}</TableCell>
+            <TableCell class="text-center">$ {{ product.price }}</TableCell>
+            <TableCell class="text-center">$ {{ product.profitPerItem }}</TableCell>
+            <TableCell class="flex gap-2 text-white flex justify-evenly">
+              <button class="bg-blue-500 hover:bg-blue-600 rounded-md p-2 px-4" @click="cartStore.addToCart(product)">Add to Cart</button>
+              <div>
+                <button class="bg-yellow-500 hover:bg-yellow-600 rounded-md p-2 px-4 me-2" @click="openEditDialog(product)">Edit</button>
+                <button class="bg-red-500 hover:bg-red-600 rounded-md p-2 px-4">Delete</button>
+              </div>
             </TableCell>
           </TableRow>
         </TableBody>
@@ -76,7 +78,7 @@ const closeDialog = () => {
       <div v-if="isLoading" class="text-center mt-5">
         <PulseLoader class="text-gray-500" />
       </div>
-      <ProductDialog :isOpen="isOpen" :isEdit="isEdit" :product="updateProduct" :close="closeDialog"/>
+      <ProductDialog :isOpen="isOpen" :isEdit="isEdit" :product="updateProduct" :close="closeDialog" />
     </main>
   </div>
 </template>

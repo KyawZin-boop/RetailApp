@@ -1,14 +1,9 @@
 <script setup>
+import { fetchSaleReport } from '@/api/sale/queires';
 import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { onMounted, ref } from 'vue';
 
-const records = ref([]);
+const { data:records } = fetchSaleReport.useQuery()
 
-onMounted(async() => {
-    let response = await fetch('https://localhost:7190/api/Manager/GetSaleReport');
-    let data = await response.json();
-    records.value = data.data;
-})
 </script>
 
 <template>
@@ -39,7 +34,7 @@ onMounted(async() => {
                         <TableCell>$ {{ record.profitPerItem }}</TableCell>
                         <TableCell>$ {{ record.totalProfit }}</TableCell>
                         <TableCell>$ {{ record.totalPrice }}</TableCell>
-                        <TableCell>{{ record.saleDate }}</TableCell>
+                        <TableCell>{{ new Date(record.saleDate).toISOString().split('T')[0] }}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>

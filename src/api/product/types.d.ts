@@ -5,6 +5,8 @@ export type ProductType = {
     stock: number,
     price: number,
     profitPerItem: number,
+    createdDate: string,
+    updatedDate: string
 }
 
 export type ProductInputType = {
@@ -20,6 +22,7 @@ export type CartType = {
     productCode: string,
     name: string,
     quantity: number,
+    stock: number,
     price: number
 }
 

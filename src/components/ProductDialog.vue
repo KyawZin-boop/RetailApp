@@ -57,9 +57,13 @@ const { mutate: addProduct } = AddProduct.useMutation({
         toast({
             title: data.message,
         })
+        closeDialog()
     },
     onSettled: () => {
-        loadingOff()
+        loadingOff(),
+        queryClient.invalidateQueries({
+            queryKey: ['getAllProducts']
+        })
     }
 })
 
@@ -77,8 +81,8 @@ const { mutate: updateProduct } = UpdateProduct.useMutation({
         })
         queryClient.invalidateQueries({
             queryKey: ['getAllProducts']
-        }
-    )
+        })
+        closeDialog()
     },
     onSettled: () => {
         loadingOff()
@@ -106,6 +110,7 @@ const onSubmit = handleSubmit((values) => {
 
     if (props.isEdit) {
       updateProduct(payload as ProductType)
+
     }
     else {
         addProduct(payload as ProductType)
