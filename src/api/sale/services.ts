@@ -1,5 +1,5 @@
 import axiosInstance, { ApiResponse } from "../config";
-import { SaleReportType } from "./types";
+import { ReportDateType, SaleReportType, TotalSummaryType } from "./types";
 
 const baseUrl = '/Manager'
 
@@ -9,4 +9,16 @@ const getSaleReport = async (): Promise<ApiResponse<SaleReportType[]>> => {
     return response.data;
 }
 
-export default { getSaleReport }
+const getTotalSummary = async (): Promise<ApiResponse<TotalSummaryType[]>> => {
+    const response = await axiosInstance.get<ApiResponse<TotalSummaryType[]>>(`${baseUrl}/GetTotalSummary`)
+    
+    return response.data;
+}
+
+const getSaleReportWithinDate = async (date: ReportDateType): Promise<ApiResponse<SaleReportType[]>> => {
+    const response = await axiosInstance.post<ApiResponse<SaleReportType[]>>(`${baseUrl}/GetSaleReportWithinRange`, date)
+    
+    return response.data;
+}
+
+export default { getSaleReport, getTotalSummary, getSaleReportWithinDate }

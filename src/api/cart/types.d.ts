@@ -1,5 +1,14 @@
 export type CartInputType = {
     productCode: string,
-    productName: string,
+    name: string,
     quantity: number
+}
+
+export type CartType = {
+    id: string,
+    productCode: string,
+    name: string,
+    quantity: number,
+    stock: number,
+    price: number
 }

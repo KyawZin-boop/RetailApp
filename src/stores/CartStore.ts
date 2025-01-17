@@ -1,12 +1,17 @@
-import { CartType, ProductType } from "@/api/product/types";
+import { CartType } from "@/api/cart/types";
+import {  ProductType } from "@/api/product/types";
 import { toast } from "@/components/ui/toast";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 export const useCartStore = defineStore('cart', () => {
     const cartItems = ref<CartType[]>([]);
-    const cartTotal = ref(0);
-    const cartCount = ref(0);
+    const cartTotal = computed(() => {
+        return cartItems.value.reduce((total, item) => total + item.price * item.quantity, 0);
+    })
+    const cartCount = computed(() => {
+        return cartItems.value.reduce((total, item) => total + item.quantity, 0);
+    })
 
     const addToCart = (product: ProductType) => {
         const isInCart = cartItems.value.find(x=> x.id === product.id);
@@ -23,8 +28,6 @@ export const useCartStore = defineStore('cart', () => {
         else{
             cartItems.value.push({...product, quantity: 1});
         }
-        cartCount.value += 1;
-        cartTotal.value += product.price;
         toast({
             title: 'Successfully added to cart'
         })
@@ -32,15 +35,11 @@ export const useCartStore = defineStore('cart', () => {
 
     const removeFromCart = (product: CartType) => {
         cartItems.value = cartItems.value.filter(x => x.id !== product.id);
-        cartTotal.value -= product.price * product.quantity;
-        cartCount.value -= product.quantity;
     }
 
     const decreaseItem = (product: CartType) => {
         if(product.quantity > 1){
             product.quantity -= 1;
-            cartTotal.value -= product.price;
-            cartCount.value -= 1;
         }else{
             removeFromCart(product);
         }
@@ -55,8 +54,6 @@ export const useCartStore = defineStore('cart', () => {
             return;
         }
         product.quantity += 1;
-        cartTotal.value += product.price;
-        cartCount.value += 1;
         toast({
             title: 'Successfully added to cart'
         })

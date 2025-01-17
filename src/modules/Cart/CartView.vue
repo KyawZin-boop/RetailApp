@@ -25,7 +25,6 @@ const cartStore = useCartStore()
 const { cartItems, cartTotal } = storeToRefs(cartStore)
 const { loadingOn, loadingOff } = useLoaderStore()
 const isOpen = ref(false)
-const checkOut = ref(false)
 const queryClient = useQueryClient();
 
 const { mutate: store } = storeCart.useMutation({
@@ -37,13 +36,15 @@ const { mutate: store } = storeCart.useMutation({
         console.log()
         toast({
             title: "Success.",
-        })
+        }),
+        cartItems.value = []
     },
     onSettled: () => {
         loadingOff(),
         queryClient.invalidateQueries({
             queryKey: ['getAllProducts']
-        })
+        }),
+        isOpen.value = false
     }
 })
 
@@ -52,14 +53,8 @@ const isCheckOut = () => {
 }
 
 const storeToReport = () => {
-    if(checkOut.value) {
-        
-    }
+        store(cartItems.value);
 }
-
-watch(checkOut, () => {
-    storeToReport()
-})
 
 </script>
 
@@ -67,10 +62,10 @@ watch(checkOut, () => {
     <div class="container">
         <main class="w-full p-10 pt-5">
             <h1 class="text-3xl text-cyan-500 font-semibold text-center">Your Cart
-                <ShoppingBagIcon class="inline ms-2" />
+                <ShoppingBagIcon class="inline ms-2 text-5xl" />
             </h1>
-            <div v-if="cartItems.length == 0">
-                <h2 class="text-4xl text-red-500 font-semibold text-center mt-5">There's no Item in Cart!</h2>
+            <div v-if="cartItems.length == 0" class="h-96 flex items-center justify-center">
+                <h2 class="text-4xl text-red-500 font-semibold text-center mt-5">There's no Item in Cart Yet!</h2>
             </div>
             <div v-else>
                 <Table class="mt-5 border">
@@ -132,7 +127,7 @@ watch(checkOut, () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel @click="isOpen = false">Cancel</AlertDialogCancel>
-                    <AlertDialogAction @click="checkOut = true">Continue</AlertDialogAction>
+                    <AlertDialogAction @click="storeToReport">Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

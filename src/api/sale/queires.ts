@@ -1,5 +1,5 @@
-import { UseQueriesOptions, useQuery } from "@tanstack/vue-query";
-import { SaleReportType } from "./types";
+import { useMutation, UseMutationOptions, UseQueriesOptions, useQuery, useQueryClient } from "@tanstack/vue-query";
+import { ReportDateType, SaleReportType, TotalSummaryType } from "./types";
 import { ApiResponse } from "../config";
 import saleServices from "./services"
 
@@ -10,23 +10,35 @@ export const fetchSaleReport = {
             queryFn: async () => {
                 const response: ApiResponse<SaleReportType[]> = await saleServices.getSaleReport();
 
-                console.log("🚀 ~ queryFn: ~ response.data:", response.data)
                 return response.data;
             },
             ...opt
         })
 }
 
-export const fetchSalesReport = {
-    useQuery: (Error: any, opt?: UseQueriesOptions<SaleReportType[]>) =>
-        useQuery<SaleReportType[], Error>({
-            queryKey: ['getSaleReport'],
+export const fetchTotalSummary = {
+    useQuery: (Error: any, opt?: UseQueriesOptions<TotalSummaryType[]>) =>
+        useQuery<TotalSummaryType[], Error>({
+            queryKey: ['getTotalSummary'],
             queryFn: async () => {
-                const response: ApiResponse<SaleReportType[]> = await saleServices.getSaleReport();
+                const response: ApiResponse<TotalSummaryType[]> = await saleServices.getTotalSummary();
 
-                console.log("🚀 ~ queryFn: ~ response.data:", response.data)
                 return response.data;
             },
             ...opt
         })
 }
+
+export const getSaleReportWithinDate = {
+        useMutation: (opt?: UseMutationOptions<any, Error, ReportDateType, any>) => {
+            const queryClient = useQueryClient();
+            return useMutation({
+                mutationKey: ['getReportWithinDate'],
+                mutationFn: (date: ReportDateType) => saleServices.getSaleReportWithinDate(date),
+                onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: ['getAllProducts']});
+                },
+                ...opt
+            })
+        }
+    }

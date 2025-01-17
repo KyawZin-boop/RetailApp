@@ -17,17 +17,4 @@ export type ProductInputType = {
     profitPerItem: number,
 }
 
-export type CartType = {
-    id: string,
-    productCode: string,
-    name: string,
-    quantity: number,
-    stock: number,
-    price: number
-}
 
-export type CartInputType = {
-    productCode: string,
-    productName: string,
-    quantity: number,
-}

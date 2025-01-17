@@ -12,9 +12,9 @@ const isActiveLink = (routePath: string) => {
 </script>
 
 <template>
-  <nav class="bg-green-50">
+  <nav class="bg-green-100">
     <div class="container flex py-4 justify-between items-center">
-      <h1 class=" text-blue-400 text-3xl font-bold">Your Freaking Store!</h1>
+      <span class=" text-blue-400 text-3xl font-bold">Fusion Store</span>
       <div class="flex gap-20 text-gray-500 text-lg">
         <RouterLink to="/" :class="[isActiveLink('/') ? 'border-b-2 border-blue-500' : 'hover:border-b-2', 'px-3']">Home</RouterLink>
         <RouterLink to="/products" :class="[isActiveLink('/products') ? 'border-b-2 border-blue-500' : 'hover:border-b-2', 'px-3']">Product</RouterLink>

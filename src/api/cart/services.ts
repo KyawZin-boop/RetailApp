@@ -1,5 +1,5 @@
 import axiosInstance, { ApiResponse } from "../config";
-import { CartInputType } from "../product/types";
+import { CartInputType } from "./types";
 
 const baseUrl = '/Cart';
 
