@@ -1,5 +1,5 @@
 import { useMutation, UseQueriesOptions, useQuery, useQueryClient, type UseMutationOptions, type UseQueryOptions } from "@tanstack/vue-query"
-import { ProductType } from "./types"
+import { ProductDeleteType, ProductType } from "./types"
 import { ApiResponse } from "../config"
 import productServices from "./services"
 
@@ -39,6 +39,17 @@ export const UpdateProduct = {
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['getAllProducts']});
             },
+            ...opt
+        })
+    }
+}
+
+export const DeleteProduct = {
+    useMutation: (opt?: UseMutationOptions<any, Error, string, any>) => {
+        const queryClient = useQueryClient();
+        return useMutation({
+            mutationKey: ['deleteProduct'],
+            mutationFn: (id: string) => productServices.deleteProduct(id),
             ...opt
         })
     }

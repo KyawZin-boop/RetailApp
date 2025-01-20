@@ -17,4 +17,8 @@ export type ProductInputType = {
     profitPerItem: number,
 }
 
+export type ProductDeleteType = {
+    id: string,
+}
+
 

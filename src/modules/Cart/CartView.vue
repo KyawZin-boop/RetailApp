@@ -119,15 +119,14 @@ const storeToReport = () => {
         <AlertDialog v-bind:open="isOpen">
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogTitle>Ready to Cash Out?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
+                        This action cannot be undone. Are you sure you want to continue?.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel @click="isOpen = false">Cancel</AlertDialogCancel>
-                    <AlertDialogAction @click="storeToReport">Continue</AlertDialogAction>
+                    <AlertDialogCancel @click="isOpen = false" class="bg-gray-500 hover:bg-gray-600 hover:text-white text-white">Cancel</AlertDialogCancel>
+                    <AlertDialogAction @click="storeToReport" class="bg-green-500 hover:bg-green-600 ">Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

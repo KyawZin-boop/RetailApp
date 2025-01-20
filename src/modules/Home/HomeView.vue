@@ -24,13 +24,14 @@ const df = new DateFormatter('en-US', {
 
 const value = ref({
     start: new CalendarDate(2024, 12, 20),
-    end: new CalendarDate(2025, 1, 20).add({ days: 20 }),
+    end: new CalendarDate(2025, 1, 20),
 }) as Ref<DateRange>
 
 const { mutate: getReportWithinDate } = getSaleReportWithinDate.useMutation({
     onSuccess: (data) => {
         rangeData.value = data.data;
         console.log("🚀 ~ data:", data)
+        console.log(rangeData.value)
     }
 })
 
@@ -41,7 +42,6 @@ const getDate = () => {
             end: value.value.end.toString()
         }
         getReportWithinDate(dateObj);
-        console.log(rangeData.value)
     }
 }
 
@@ -55,7 +55,7 @@ rangeData.value = summary;
 </script>
 
 <template>
-    <div class="container">
+    <div class="container py-6">
         <Popover>
             <PopoverTrigger as-child>
                 <Button variant="outline" :class="cn(
@@ -83,7 +83,7 @@ rangeData.value = summary;
                     @update:start-value="(startDate) => value.start = startDate" />
             </PopoverContent>
         </Popover>
-        <BarChart index="name" :data="rangeData ?? []" :categories="['totalPrice', 'totalProfit']" :y-formatter="(tick, i) => {
+        <BarChart index="name" :data="rangeData.value ?? []" :categories="['totalPrice', 'totalProfit']" :y-formatter="(tick, i) => {
             return typeof tick === 'number'
                 ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
                 : ''

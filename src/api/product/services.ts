@@ -1,5 +1,5 @@
 import axiosInstance, { ApiResponse } from "../config"
-import { ProductType, ProductInputType } from "./types"
+import { ProductType, ProductInputType, ProductDeleteType } from "./types"
 
 const baseUrl = '/Product'
 
@@ -21,4 +21,9 @@ const updateProduct = async (product: ProductInputType): Promise<ApiResponse<Pro
     return response.data;
 }
 
-export default { getAllProducts, addProduct, updateProduct }
+const deleteProduct = async (id: string): Promise<ApiResponse<ProductDeleteType>> => {
+    const response = await axiosInstance.post<ApiResponse<ProductDeleteType>>(`${baseUrl}/DeleteProduct?id=${id}`);
+    return response.data;
+}
+
+export default { getAllProducts, addProduct, updateProduct, deleteProduct }

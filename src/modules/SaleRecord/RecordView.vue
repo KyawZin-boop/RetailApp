@@ -1,15 +1,28 @@
 <script setup>
-import { fetchSaleReport } from '@/api/sale/queires';
+import { fetchSaleReport, fetchTotalSummary } from '@/api/sale/queires';
 import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const { data: records } = fetchSaleReport.useQuery()
+const { data: summary } = fetchTotalSummary.useQuery()
 
 </script>
 
 <template>
-<div class="container">
+    <div class="container">
         <main class="w-full px-10">
-            <Table class="mt-5">
+            <div class="flex gap-5">
+                <div
+                    class="border border-gray-200 p-3 px-10 my-5 rounded-2xl bg-blue-500 hover:bg-blue-600 text-gray-100 text-center shadow-xl">
+                    <p class="text-2xl font-bold">Total Revenue</p>
+                    <p class="text-xl font-semibold text-yellow-300">{{ summary?.totalRevenue }}</p>
+                </div>
+                <div
+                    class="border border-gray-200 p-3 px-10 my-5 rounded-2xl bg-blue-500 hover:bg-blue-600 text-gray-100 text-center shadow-xl">
+                    <p class="text-2xl font-bold">Total Profit</p>
+                    <p class="text-xl font-semibold text-green-300">{{ summary?.totalProfit }}</p>
+                </div>
+            </div>
+            <Table>
                 <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                     <TableRow class="bg-green-400 hover:bg-green-500 text-lg">
