@@ -9,8 +9,8 @@ const getSaleReport = async (): Promise<ApiResponse<SaleReportType[]>> => {
     return response.data;
 }
 
-const getTotalSummary = async (): Promise<ApiResponse<TotalSummaryType[]>> => {
-    const response = await axiosInstance.get<ApiResponse<TotalSummaryType[]>>(`${baseUrl}/GetTotalSummary`)
+const getTotalSummary = async (): Promise<ApiResponse<TotalSummaryType>> => {
+    const response = await axiosInstance.get<ApiResponse<TotalSummaryType>>(`${baseUrl}/GetTotalSummary`)
     
     return response.data;
 }

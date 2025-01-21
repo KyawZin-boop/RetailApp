@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from 
 import { useLoaderStore } from '@/stores/loaderStore'
 import { toTypedSchema } from '@vee-validate/zod'
 import { AddProduct, UpdateProduct } from '@/api/product/queries'
-import { defineProps, onMounted, ref, watch } from 'vue'
+import { watch } from 'vue'
 import * as z from 'zod'
 import { ProductType } from '@/api/product/types'
 import { useForm } from 'vee-validate'

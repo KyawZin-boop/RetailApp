@@ -49,7 +49,7 @@ watch(() => value.value, () => {
     getDate();
 })
 
-const { data: summary } = fetchSaleReport.useQuery("getSaleReport");
+const { data: summary } = fetchSaleReport.useQuery();
 rangeData.value = summary;
 
 </script>

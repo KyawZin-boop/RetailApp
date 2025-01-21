@@ -4,7 +4,7 @@ import { ApiResponse } from "../config";
 import saleServices from "./services"
 
 export const fetchSaleReport = {
-    useQuery: (Error: any, opt?: UseQueriesOptions<SaleReportType[]>) =>
+    useQuery: (opt?: UseQueriesOptions<SaleReportType[]>) =>
         useQuery<SaleReportType[], Error>({
             queryKey: ['getSaleReport'],
             queryFn: async () => {
@@ -17,11 +17,11 @@ export const fetchSaleReport = {
 }
 
 export const fetchTotalSummary = {
-    useQuery: (Error: any, opt?: UseQueriesOptions<TotalSummaryType[]>) =>
-        useQuery<TotalSummaryType[], Error>({
+    useQuery: (opt?: TotalSummaryType) =>
+        useQuery<TotalSummaryType, Error>({
             queryKey: ['getTotalSummary'],
             queryFn: async () => {
-                const response: ApiResponse<TotalSummaryType[]> = await saleServices.getTotalSummary();
+                const response: ApiResponse<TotalSummaryType> = await saleServices.getTotalSummary();
 
                 return response.data;
             },

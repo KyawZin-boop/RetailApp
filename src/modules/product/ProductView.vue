@@ -1,7 +1,6 @@
-<script setup>
+<script setup >
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ref, reactive } from 'vue'
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -29,11 +28,11 @@ const cartStore = useCartStore()
 
 const { data } = fetchProducts.useQuery("products")
 
-
-
 const isEdit = ref(false)
 const isOpen = ref(false)
+
 const updateProduct = ref({})
+
 const isDelete = ref(false)
 const deleteProductId = ref("")
 
