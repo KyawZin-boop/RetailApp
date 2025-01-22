@@ -1,46 +1,8 @@
 <script setup lang="ts">
 import { fetchSaleReport, fetchTotalSummary } from '@/api/sale/queires';
-import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { onMounted, ref } from 'vue'
-import { columns } from '@/components/columns'
+// import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { columns } from '@/modules/SaleRecord/chunks/RecordColumns'
 import DataTable from '@/components/DataTable.vue'
-
-// const data = ref<Payment[]>([])
-
-// async function getData(): Promise<Payment[]> {
-//   // Fetch data from your API here.
-//   return [
-//     {
-//       id: '728ed52f',
-//       amount: 100,
-//       status: 'pending',
-//       email: 'm@example.com',
-//     },
-//     {
-//       id: '34563fds',
-//       amount: 100,
-//       status: 'pending',
-//       email: 'a@example.com',
-//     },
-//     {
-//       id: '52345gfd',
-//       amount: 100,
-//       status: 'pending',
-//       email: 'z@example.com',
-//     },
-//     {
-//       id: '5436bs45',
-//       amount: 100,
-//       status: 'pending',
-//       email: 'd@example.com',
-//     },
-//     // ...
-//   ]
-// }
-
-// onMounted(async () => {
-//   data.value = await getData()
-// })
 
 const { data: records } = fetchSaleReport.useQuery()
 const { data: summary } = fetchTotalSummary.useQuery()
@@ -48,22 +10,20 @@ const { data: summary } = fetchTotalSummary.useQuery()
 </script>
 
 <template>
-    <div class="container">
-        <main class="w-full px-10">
-            <div class="flex gap-5">
-                <div
-                    class="border border-gray-200 p-3 px-10 my-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-gray-100 text-center shadow-xl">
-                    <p class="text-2xl font-bold">Total Revenue</p>
-                    <p class="text-xl font-semibold text-yellow-300">$ {{ summary?.totalRevenue }}</p>
-                </div>
-                <div
-                    class="border border-gray-200 p-3 px-10 my-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-gray-100 text-center shadow-xl">
-                    <p class="text-2xl font-bold">Total Profit</p>
-                    <p class="text-xl font-semibold text-green-300">$ {{ summary?.totalProfit }}</p>
-                </div>
-            </div>
-            <DataTable :columns="columns" :data="records || []" />
-            <!-- <Table>
+    <div class="flex gap-5">
+        <div
+            class="border border-gray-200 p-3 px-10 my-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-gray-100 text-center shadow-xl">
+            <p class="text-2xl font-bold">Total Revenue</p>
+            <p class="text-xl font-semibold text-yellow-300">$ {{ summary?.totalRevenue }}</p>
+        </div>
+        <div
+            class="border border-gray-200 p-3 px-10 my-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-gray-100 text-center shadow-xl">
+            <p class="text-2xl font-bold">Total Profit</p>
+            <p class="text-xl font-semibold text-green-300">$ {{ summary?.totalProfit }}</p>
+        </div>
+    </div>
+    <DataTable :columns="columns" :data="records || []" />
+    <!-- <Table>
                 <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                     <TableRow class="bg-green-400 hover:bg-green-500 text-lg">
@@ -92,6 +52,4 @@ const { data: summary } = fetchTotalSummary.useQuery()
                     </TableRow>
                 </TableBody>
             </Table> -->
-        </main>
-    </div>
 </template>

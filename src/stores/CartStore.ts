@@ -45,6 +45,15 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
+    const decreaseItemInProduct = (product: ProductType) => {
+        const item = cartItems.value.find(x=> x.id === product.id);
+        if(item && item.quantity > 1){
+            item.quantity -= 1;
+        }else if(item){
+            removeFromCart(item);
+        }
+    }
+
     const IncreaseItem = (product: CartType) => {
         if(product.quantity >= product.stock) {
             toast({
@@ -59,6 +68,10 @@ export const useCartStore = defineStore('cart', () => {
         })
     }
 
-    return { cartItems, addToCart, removeFromCart, decreaseItem, IncreaseItem, cartTotal, cartCount };
+    const getQty = (product: CartType) => {
+        return cartItems.value.find(x => x.id == product.id)?.quantity;
+    }
+
+    return { cartItems, addToCart, removeFromCart, decreaseItem, IncreaseItem, cartTotal, cartCount, getQty, decreaseItemInProduct };
 
 })

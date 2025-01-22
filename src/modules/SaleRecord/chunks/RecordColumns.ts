@@ -1,8 +1,7 @@
-import DropdownAction from './data-table-dropdown.vue'
 import { ArrowUpDown, ChevronDown } from 'lucide-vue-next'
 import { ColumnDef } from '@tanstack/vue-table' 
 import { h } from 'vue'
-import { Button } from './ui/button'
+import { Button } from '../../../components/ui/button'
 import { SaleReportType } from '@/api/sale/types'
 import { queryOptions } from '@tanstack/vue-query'
 

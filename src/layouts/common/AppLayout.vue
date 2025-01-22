@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/CartStore';
-import {RouterLink, useRoute} from 'vue-router'
+import {RouterLink, RouterView, useRoute} from 'vue-router'
 
 const cartStore = useCartStore()
 
@@ -29,4 +29,9 @@ const isActiveLink = (routePath: string) => {
       </div>
     </div>
   </nav>
+  <div class="container">
+    <main class="w-full px-10">
+        <RouterView />
+    </main>
+</div>
 </template>
