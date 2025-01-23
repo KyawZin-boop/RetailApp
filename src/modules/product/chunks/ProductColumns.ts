@@ -1,4 +1,4 @@
-import { ArrowUpDown, ChevronDown, MinusIcon, PlusIcon } from 'lucide-vue-next'
+import { ArrowUpDown } from 'lucide-vue-next'
 import { ColumnDef } from '@tanstack/vue-table' 
 import { h } from 'vue'
 import { Button } from '../../../components/ui/button'
@@ -10,7 +10,7 @@ export const columns: ColumnDef<ProductType>[] = [
     accessorKey: 'No',
     header: () => h('div', { class: 'text-center' }, 'No.'),
     cell: ({ row }) => {
-      const id =  Number.parseInt(row.id) + 1
+      const id =  Number.parseInt(row.id)
 
       return h('div', { class: 'text-center font-medium' }, id)
     },
@@ -29,9 +29,8 @@ export const columns: ColumnDef<ProductType>[] = [
       header: ({ column }) => {
         return h(Button, {
             variant: 'ghost',
-            class: 'text-left',
             onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-        }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' }),])
     },
       cell: ({ row }) => {
         const name = (row.getValue('name') as string).toUpperCase()

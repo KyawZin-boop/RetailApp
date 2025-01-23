@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { ref, provide } from 'vue'
+import { ref, provide, computed, watch } from 'vue'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,23 +15,23 @@ import { Button } from '@/components/ui/button'
 import { storeToRefs } from 'pinia'
 import { useLoaderStore } from '@/stores/loaderStore'
 import { useCartStore } from '@/stores/CartStore'
-import { DeleteProduct, fetchProducts } from '@/api/product/queries'
+import { DeleteProduct, fetchProducts, getProductWithPagination } from '@/api/product/queries'
 import ProductDialog from '@/modules/product/chunks/ProductDialog.vue'
 import { toast } from '@/components/ui/toast'
 import { useQueryClient } from '@tanstack/vue-query'
-import { MinusIcon, PlusIcon } from 'lucide-vue-next'
 import DataTable from '@/components/DataTable.vue'
 import { columns } from './chunks/ProductColumns'
 import { ProductType } from '@/api/product/types'
+import { paginationInfo } from '@/api/sale/types'
+import { reactive } from 'vue'
 
 const loaderStore = useLoaderStore()
 const queryClient = useQueryClient()
 const { isLoading } = storeToRefs(loaderStore)
 
 const cartStore = useCartStore()
-const { cartItems } = storeToRefs(cartStore)
 
-const { data } = fetchProducts.useQuery("products")
+// const { data } = fetchProducts.useQuery("products")
 
 const isEdit = ref(false)
 const isOpen = ref(false)
@@ -85,57 +85,48 @@ const closeDialog = () => {
   updateProduct.value = undefined;
 }
 
+const pagination = reactive<paginationInfo>({
+  page: 1,
+  pageSize: 10,
+});
+
+const changePage = (page: number) => {
+  pagination.page = page;
+};
+
+const changePageSize = (pageSize: number) => {
+  pagination.pageSize = pageSize;
+};
+
+const queryKey = computed(() => ['getProductWithPagination', pagination.page, pagination.pageSize]);
+
+const { data, refetch } = getProductWithPagination.useQuery(queryKey);
+
+const tableData = computed(() => {
+  return data.value?.items || [];
+});
+
+// Automatically refetch when pagination changes
+watch(
+  () => [pagination.page, pagination.pageSize],
+  () => {
+    refetch();
+  }
+);
+
 </script>
 
 <template>
       <Button class="bg-blue-500 hover:bg-blue-600 mt-5" @click="openAddProductDialog">Add Product</Button>
-      <DataTable :columns="columns" :data="data || []" />
-      <!-- <Table class="mt-5">
-        <TableHeader>
-          <TableRow class="bg-green-400 hover:bg-green-500 text-lg">
-            <TableHead class="w-[100px] font-bold text-gray-600 text-center">No.</TableHead>
-            <TableHead class="font-bold text-gray-600 text-center">Code</TableHead>
-            <TableHead class="font-bold text-gray-600 text-center">Name</TableHead>
-            <TableHead class="font-bold text-gray-600 text-center">Stock</TableHead>
-            <TableHead class="font-bold text-gray-600 text-center">Price</TableHead>
-            <TableHead class="font-bold text-gray-600 text-center">ProfitPerItem</TableHead>
-            <TableHead class="font-bold text-gray-600 text-center">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="(product, index) in data" :key="index + 1">
-            <TableCell class="text-center">{{ index + 1 }}</TableCell>
-            <TableCell class="text-center">{{ product.productCode }}</TableCell>
-            <TableCell class="text-center">{{ product.name }}</TableCell>
-            <TableCell class="text-center">{{ product.stock }}</TableCell>
-            <TableCell class="text-center">$ {{ product.price }}</TableCell>
-            <TableCell class="text-center">$ {{ product.profitPerItem }}</TableCell>
-            <TableCell class="flex gap-2 text-white flex justify-evenly">
-              <button v-if="!cartStore.cartItems.find((item) => item.id === product.id)"
-                class="bg-blue-500 hover:bg-blue-600 rounded-md p-2 px-4" @click="cartStore.addToCart(product)">Add to
-                Cart</button>
-              <div v-else class="flex justify-evenly items-center">
-                <span class=" rounded-full px-2 font-semibold text-red-600 cursor-pointer hover:bg-gray-200 select-none"
-                  @click="cartStore.decreaseItemInProduct(product)">
-                  <MinusIcon />
-                </span>
-                <span class="w-[30px] text-black text-center">{{ cartItems.find((item) => item.id === product.id).quantity }}</span>
-                <span
-                  class="rounded-full align-middle px-2 font-semibold text-green-600 cursor-pointer hover:bg-gray-200 select-none"
-                  @click="cartStore.addToCart(product)">
-                  <PlusIcon />
-                </span>
-              </div>
-              <div>
-                <button class="bg-yellow-500 hover:bg-yellow-600 rounded-md p-2 px-4 me-2"
-                  @click="openEditDialog(product)">Edit</button>
-                <button class="bg-red-500 hover:bg-red-600 rounded-md p-2 px-4"
-                  @click="openDeleteDialog(product.id)">Delete</button>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table> -->
+      <DataTable
+    v-model:page="pagination.page"
+    v-model:pageSize="pagination.pageSize"
+    :columns="columns"
+    :data="tableData"
+    :data-info="data"
+    @page-change="changePage"
+    @page-size-change="changePageSize"
+  />
       <div v-if="isLoading" class="text-center mt-5">
         <PulseLoader class="text-gray-500" />
       </div>

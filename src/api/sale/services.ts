@@ -1,4 +1,5 @@
-import axiosInstance, { ApiResponse } from "../config";
+import { Ref } from "vue";
+import axiosInstance, { ApiResponse, PaginatedType } from "../config";
 import { ReportDateType, SaleReportType, TotalSummaryType } from "./types";
 
 const baseUrl = '/Manager'
@@ -21,4 +22,10 @@ const getSaleReportWithinDate = async (date: ReportDateType): Promise<ApiRespons
     return response.data;
 }
 
-export default { getSaleReport, getTotalSummary, getSaleReportWithinDate }
+const getSaleReportWithPagination = async (page: number, pageSize: number): Promise<ApiResponse<PaginatedType>> => {
+    const response = await axiosInstance.get<ApiResponse<PaginatedType>>(`${baseUrl}/GetSaleRecordWithPagination?page=${page}&pageSize=${pageSize}`)
+    
+    return response.data;
+}
+
+export default { getSaleReport, getTotalSummary, getSaleReportWithinDate, getSaleReportWithPagination }

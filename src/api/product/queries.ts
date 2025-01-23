@@ -1,7 +1,8 @@
-import { useMutation, UseQueriesOptions, useQuery, useQueryClient, type UseMutationOptions, type UseQueryOptions } from "@tanstack/vue-query"
+import { keepPreviousData, useMutation, UseQueriesOptions, useQuery, useQueryClient, type UseMutationOptions, type UseQueryOptions } from "@tanstack/vue-query"
 import { ProductDeleteType, ProductType } from "./types"
-import { ApiResponse } from "../config"
+import { ApiResponse, PaginatedType } from "../config"
 import productServices from "./services"
+import { ComputedRef } from "vue"
 
 export const fetchProducts = {
     useQuery: (Error: any, opt?: UseQueriesOptions<ProductType[]>) =>
@@ -53,4 +54,21 @@ export const DeleteProduct = {
             ...opt
         })
     }
+}
+
+export const getProductWithPagination = {
+    useQuery: (queryKey: ComputedRef, opt?: UseQueryOptions<PaginatedType, Error>) =>
+        useQuery<PaginatedType, Error>({
+            queryKey,
+            queryFn: async () =>{
+                var res = await productServices.getProductWithPagination(
+                    queryKey.value[1],
+                    queryKey.value[2]
+                )
+
+                return res.data
+            },
+            placeholderData: keepPreviousData,
+            ...opt
+        })
 }

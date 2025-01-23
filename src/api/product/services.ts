@@ -1,4 +1,4 @@
-import axiosInstance, { ApiResponse } from "../config"
+import axiosInstance, { ApiResponse, PaginatedType } from "../config"
 import { ProductType, ProductInputType, ProductDeleteType } from "./types"
 
 const baseUrl = '/Product'
@@ -26,4 +26,10 @@ const deleteProduct = async (id: string): Promise<ApiResponse<ProductDeleteType>
     return response.data;
 }
 
-export default { getAllProducts, addProduct, updateProduct, deleteProduct }
+const getProductWithPagination = async (page: number, pageSize: number): Promise<ApiResponse<PaginatedType>> => {
+    const response = await axiosInstance.get<ApiResponse<PaginatedType>>(`${baseUrl}/GetAllProductWithPagination?page=${page}&pageSize=${pageSize}`)
+    
+    return response.data;
+}
+
+export default { getAllProducts, addProduct, updateProduct, deleteProduct, getProductWithPagination }

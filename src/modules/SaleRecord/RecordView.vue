@@ -1,12 +1,40 @@
 <script setup lang="ts">
-import { fetchSaleReport, fetchTotalSummary } from '@/api/sale/queires';
-// import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { columns } from '@/modules/SaleRecord/chunks/RecordColumns'
-import DataTable from '@/components/DataTable.vue'
+import { fetchTotalSummary, getSaleReportWithPagination } from '@/api/sale/queires';
+import { columns } from '@/modules/SaleRecord/chunks/RecordColumns';
+import DataTable from '@/components/DataTable.vue';
+import { computed, reactive, ref, watch } from 'vue';
+import { paginationInfo, SaleReportType } from '@/api/sale/types';
 
-const { data: records } = fetchSaleReport.useQuery()
-const { data: summary } = fetchTotalSummary.useQuery()
+const { data: summary } = fetchTotalSummary.useQuery();
 
+const pagination = reactive<paginationInfo>({
+    page: 1,
+    pageSize: 10,
+});
+
+const changePage = (page: number) => {
+    pagination.page = page;
+};
+
+const changePageSize = (pageSize: number) => {
+    pagination.pageSize = pageSize;
+};
+
+const queryKey = computed(() => ['getAllUsers', pagination.page, pagination.pageSize]);
+
+const { data, refetch } = getSaleReportWithPagination.useQuery(queryKey);
+
+const tableData = computed(() => {
+    return data.value?.items || [];
+});
+
+// Automatically refetch when pagination changes
+watch(
+    () => [pagination.page, pagination.pageSize],
+    () => {
+        refetch();
+    }
+);
 </script>
 
 <template>
@@ -22,34 +50,6 @@ const { data: summary } = fetchTotalSummary.useQuery()
             <p class="text-xl font-semibold text-green-300">$ {{ summary?.totalProfit }}</p>
         </div>
     </div>
-    <DataTable :columns="columns" :data="records || []" />
-    <!-- <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
-                <TableHeader>
-                    <TableRow class="bg-green-400 hover:bg-green-500 text-lg">
-                        <TableHead class="w-[100px] font-bold text-gray-600">No.</TableHead>
-                        <TableHead class="font-bold text-gray-600">Product Code</TableHead>
-                        <TableHead class="font-bold text-gray-600">Product Name</TableHead>
-                        <TableHead class="font-bold text-gray-600">Quantity</TableHead>
-                        <TableHead class="font-bold text-gray-600">Selling Price</TableHead>
-                        <TableHead class="font-bold text-gray-600">ProfitPerItem</TableHead>
-                        <TableHead class="font-bold text-gray-600">Total Profit</TableHead>
-                        <TableHead class="font-bold text-gray-600">Total Price</TableHead>
-                        <TableHead class="font-bold text-gray-600">Sale Date</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    <TableRow v-for="(record, index) in records" :key="record">
-                        <TableCell>{{ index + 1 }}</TableCell>
-                        <TableCell>{{ record.productCode }}</TableCell>
-                        <TableCell>{{ record.name }}</TableCell>
-                        <TableCell>{{ record.quantity }}</TableCell>
-                        <TableCell>$ {{ record.sellingPrice }}</TableCell>
-                        <TableCell>$ {{ record.profitPerItem }}</TableCell>
-                        <TableCell>$ {{ record.totalProfit }}</TableCell>
-                        <TableCell>$ {{ record.totalPrice }}</TableCell>
-                        <TableCell>{{ new Date(record.saleDate).toISOString().split('T')[0] }}</TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table> -->
+    <DataTable v-model:page="pagination.page" v-model:pageSize="pagination.pageSize" :columns="columns"
+        :data="tableData" :data-info="data" @page-change="changePage" @page-size-change="changePageSize" />
 </template>

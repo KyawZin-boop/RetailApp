@@ -6,6 +6,12 @@ export type ApiResponse<T> = {
     data: T
 }
 
+export type PaginatedType = {
+    items: [],
+    totalCount: number,
+    totalPages: number
+}
+
 const axiosInstance = axios.create({
     baseURL: 'https://localhost:7190/api/',
     headers: {

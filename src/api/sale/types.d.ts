@@ -19,3 +19,8 @@ export type ReportDateType = {
     start : string,
     end : string
 }
+
+export type paginationInfo = {
+    page: number,
+    pageSize: number
+}
