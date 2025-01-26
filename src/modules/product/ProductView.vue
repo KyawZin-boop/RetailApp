@@ -53,9 +53,7 @@ const { mutate: deleteFn } = DeleteProduct.useMutation({
     toast({
       title: data.message,
     })
-    queryClient.invalidateQueries({
-      queryKey: ['getAllProducts']
-    })
+    refetch()
   }
 })
 

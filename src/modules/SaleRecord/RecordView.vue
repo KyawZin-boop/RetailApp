@@ -3,7 +3,7 @@ import { fetchTotalSummary, getSaleReportWithPagination } from '@/api/sale/queir
 import { columns } from '@/modules/SaleRecord/chunks/RecordColumns';
 import DataTable from '@/components/DataTable.vue';
 import { computed, reactive, ref, watch } from 'vue';
-import { paginationInfo, SaleReportType } from '@/api/sale/types';
+import { paginationInfo } from '@/api/sale/types';
 
 const { data: summary } = fetchTotalSummary.useQuery();
 
